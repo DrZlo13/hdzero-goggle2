@@ -8,6 +8,7 @@
 
 #include "../core/common.hh"
 #include "../core/defines.h"
+#include "driver/dm5680.h"
 #include "driver/gpio.h"
 #include "gpadc.h"
 #include "i2c.h"
@@ -40,10 +41,12 @@ void RTC6715_SetAudio(int is_on) {
 }
 
 void RTC6715_Open(int power_on, int audio_on) {
+    DM5680_InternalAnalog_Power(power_on);
     gpadc_on(power_on);
     if (power_on) {
         usleep(200 * 1000);
         RTC6715_SetAudio(audio_on);
+        I2C_Write(ADDR_FPGA, 0x8C, 0x02);
     }
     LOGI("RTC6715_Open:%d, audio:%d", power_on, audio_on);
 }
