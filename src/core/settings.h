@@ -252,7 +252,7 @@ typedef struct {
     setting_sources_analog_module_t analog_module;
     setting_sources_analog_format_t analog_format; // 0=NTSC, 1= PAL
     uint8_t analog_channel;
-    setting_sources_analog_ratio_t analog_ratio;   // 0=4:3, 1=16:9
+    setting_sources_analog_ratio_t analog_ratio; // 0=4:3, 1=16:9
     setting_sources_hdzero_band_t hdzero_band;
     setting_sources_hdzero_bw_t hdzero_bw;
 } setting_sources_t;
@@ -276,6 +276,11 @@ typedef struct {
 } language_t;
 
 typedef struct {
+    uint16_t calib_min;
+    uint16_t calib_max;
+} setting_analog_rssi_t;
+
+typedef struct {
     setting_scan_t scan;
     setting_fan_t fans;
     setting_autoscan_t autoscan;
@@ -292,6 +297,7 @@ typedef struct {
     ease_use_t ease;
     setting_storage_t storage;
     language_t language;
+    setting_analog_rssi_t analog_rssi;
 } setting_t;
 
 extern setting_t g_setting;

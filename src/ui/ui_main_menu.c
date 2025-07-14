@@ -12,6 +12,7 @@
 #include "driver/mcp3021.h"
 #include "driver/oled.h"
 #include "lang/language.h"
+#include "ui/page_analog_rssi.h"
 #include "ui/page_autoscan.h"
 #include "ui/page_clock.h"
 #include "ui/page_common.h"
@@ -64,6 +65,7 @@ static page_pack_t *page_packs[] = {
     &pp_focus_chart,
     &pp_clock,
     &pp_input,
+    &pp_analog_rssi,
     &pp_sleep,
 };
 
@@ -276,14 +278,14 @@ static void main_menu_create_entry(lv_obj_t *menu, lv_obj_t *section, page_pack_
 
     pp->label = lv_label_create(cont);
     lv_label_set_text(pp->label, _lang(pp->name));
-    lv_obj_set_style_text_font(pp->label, &lv_font_montserrat_26, 0);
+    lv_obj_set_style_text_font(pp->label, &lv_font_montserrat_24, 0);
     lv_label_set_long_mode(pp->label, LV_LABEL_LONG_SCROLL_CIRCULAR);
 
     pp->icon = lv_img_create(cont);
     lv_img_set_src(pp->icon, &img_arrow);
     lv_obj_add_flag(pp->icon, LV_OBJ_FLAG_HIDDEN);
 
-    lv_obj_set_style_text_font(cont, &lv_font_montserrat_26, 0);
+    lv_obj_set_style_text_font(cont, &lv_font_montserrat_24, 0);
     lv_menu_set_load_page_event(menu, cont, pp->page);
 
     if (pp->on_created) {
@@ -291,9 +293,9 @@ static void main_menu_create_entry(lv_obj_t *menu, lv_obj_t *section, page_pack_
     }
 }
 
-static int post_bootup_actions_cmp(const void * lhs, const void * rhs) {
-    const int32_t leftPriority = ((page_pack_t*) lhs)->post_bootup_run_priority;
-    const int32_t rightPriority = ((page_pack_t*) rhs)->post_bootup_run_priority;
+static int post_bootup_actions_cmp(const void *lhs, const void *rhs) {
+    const int32_t leftPriority = ((page_pack_t *)lhs)->post_bootup_run_priority;
+    const int32_t rightPriority = ((page_pack_t *)rhs)->post_bootup_run_priority;
 
     if (leftPriority < rightPriority) {
         return -1;
@@ -329,7 +331,7 @@ void main_menu_init(void) {
     }
 
     // Resort based on priority
-    qsort(post_bootup_actions, post_bootup_actions_count, sizeof(page_pack_t*), post_bootup_actions_cmp);
+    qsort(post_bootup_actions, post_bootup_actions_count, sizeof(page_pack_t *), post_bootup_actions_cmp);
 
     lv_obj_add_style(section, &style_rootmenu, LV_PART_MAIN);
     lv_obj_set_size(section, 250, 975);

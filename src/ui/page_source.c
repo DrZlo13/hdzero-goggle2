@@ -44,7 +44,7 @@ static lv_obj_t *page_source_create(lv_obj_t *parent, panel_arr_t *arr) {
 
     lv_obj_t *section = lv_menu_section_create(page);
     lv_obj_add_style(section, &style_submenu, LV_PART_MAIN);
-    lv_obj_set_size(section, 960, 894);
+    lv_obj_set_size(section, 1053, 894);
 
     snprintf(buf, sizeof(buf), "%s:", _lang("Source"));
     create_text(NULL, section, false, buf, LV_MENU_ITEM_BUILDER_VARIANT_2);
