@@ -82,19 +82,19 @@ uint32_t pclk_phase_default[2][VIDEO_SOURCE_NUM] = {
     },
     {
         // GOGGLE_VER_2
-        0x00000001,
+        0x00000002,
         0x00000004, // VIDEO_SOURCE_MENU_UI
-        0x00000000, // VIDEO_SOURCE_HDZERO_IN_720P60_50
-        0x00000000, // VIDEO_SOURCE_HDZERO_IN_720P90
-        0x00000000, // VIDEO_SOURCE_HDZERO_IN_1080P30
-        0x00000000, // VIDEO_SOURCE_AV_IN
-        0x00000000, // VIDEO_SOURCE_HDMI_IN_1080P50
-        0x00000000, // VIDEO_SOURCE_HDMI_IN_1080P60
-        0x00000000, // VIDEO_SOURCE_HDMI_IN_1080POTHER
-        0x00000000, // VIDEO_SOURCE_HDMI_IN_720P50
-        0x00000000, // VIDEO_SOURCE_HDMI_IN_720P60
-        0x00000000, // VIDEO_SOURCE_HDMI_IN_720P100
-        0x00000000, // VIDEO_SOURCE_TP2825_EX, DO NOT USE
+        0x00000004, // VIDEO_SOURCE_HDZERO_IN_720P60_50
+        0x00000004, // VIDEO_SOURCE_HDZERO_IN_720P90
+        0x00000004, // VIDEO_SOURCE_HDZERO_IN_1080P30
+        0x00000004, // VIDEO_SOURCE_AV_IN
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_1080P50
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_1080P60
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_1080POTHER
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_720P50
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_720P60
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_720P100
+        0x00000004, // VIDEO_SOURCE_TP2825_EX, DO NOT USE
     },
 };
 
@@ -493,7 +493,7 @@ DCLK_DLY_NUM[5:0]
 */
 void vdpo_sync_ctrl_set(bool dclk_invert, bool dclk_dly_en, uint8_t dvlk_dly_num) {
     const uint32_t addr = 0x06542008;
-    uint32_t dat = 0x00000003 + 8;
+    uint32_t dat = 0x00000003;
     char buf[32];
 
     dat |= (dclk_invert << 3);
@@ -537,7 +537,11 @@ void pclk_phase_set(video_source_t source) {
     TP2825_Set_Pclk((pclk_phase[source] >> 1) & 1);
 
     // bit[2] osd
-    vdpo_sync_ctrl_set((pclk_phase[source] >> 2) & 1, 0, 0);
+    if (source == VIDEO_SOURCE_AV_IN) {
+        vdpo_sync_ctrl_set((pclk_phase[source] >> 2) & 1, 1, 0);
+    } else {
+        vdpo_sync_ctrl_set((pclk_phase[source] >> 2) & 1, 0, 0);
+    }
 
     // bit[3] dvr
     csic_pclk_invert_set((pclk_phase[source] >> 3) & 1);
@@ -859,6 +863,7 @@ void AV_Mode_Switch_fpga(int is_pal) {
     }
     I2C_Write(ADDR_FPGA, 0x06, 0x0F);
     system_exec("aww 0x06542018 0x00000044"); // disable horizontal chroma FIR filter.
+    vdpo_sync_ctrl_set((pclk_phase[VIDEO_SOURCE_AV_IN] >> 2) & 1, 1, 0);
 }
 
 void AV_Mode_Switch(int is_pal) {
@@ -971,8 +976,9 @@ int AV_in_detect() // return = 1: vtmg to V536 changed
             g_hw_stat.av_pal_w = g_hw_stat.av_pal_w ? 0 : 1;
 
             TP2825_Switch_Mode(g_hw_stat.av_pal_w);
-            if (GOGGLE_VER_2)
+            if (GOGGLE_VER_2) {
                 AV_Mode_Switch(g_hw_stat.av_pal_w);
+            }
             // LOGI("Switch mode:%d", g_hw_stat.av_pal_w);
 
             if (g_hw_stat.av_pal_w)
