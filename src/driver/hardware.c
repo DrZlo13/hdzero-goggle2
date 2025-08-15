@@ -82,15 +82,15 @@ uint32_t pclk_phase_default[2][VIDEO_SOURCE_NUM] = {
     },
     {
         // GOGGLE_VER_2
-        0x00000003,
+        0x00000004,
         0x00000004, // VIDEO_SOURCE_MENU_UI
         0x00000004, // VIDEO_SOURCE_HDZERO_IN_720P60_50
         0x00000004, // VIDEO_SOURCE_HDZERO_IN_720P90
         0x00000004, // VIDEO_SOURCE_HDZERO_IN_1080P30
         0x00000004, // VIDEO_SOURCE_AV_IN
-        0x00000005, // VIDEO_SOURCE_HDMI_IN_1080P50
-        0x00000005, // VIDEO_SOURCE_HDMI_IN_1080P60
-        0x00000005, // VIDEO_SOURCE_HDMI_IN_1080POTHER
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_1080P50
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_1080P60
+        0x00000004, // VIDEO_SOURCE_HDMI_IN_1080POTHER
         0x00000004, // VIDEO_SOURCE_HDMI_IN_720P50
         0x00000004, // VIDEO_SOURCE_HDMI_IN_720P60
         0x00000004, // VIDEO_SOURCE_HDMI_IN_720P100
@@ -531,7 +531,11 @@ void csic_pclk_invert_set(uint8_t is_invert) {
 void pclk_phase_set(video_source_t source) {
     LOGI("pclk_phase_set %d", pclk_phase[source]);
     // bit[0] hdmi in
-    IT66021_Set_Pclk((pclk_phase[source] >> 0) & 1);
+    if (source == VIDEO_SOURCE_HDMI_IN_1080P50 || source == VIDEO_SOURCE_HDMI_IN_1080P60 || source == VIDEO_SOURCE_HDMI_IN_1080POTHER) {
+        IT66021_Set_Pclk((pclk_phase[source] >> 0) & 1, 1);
+    } else {
+        IT66021_Set_Pclk((pclk_phase[source] >> 0) & 1, 2);
+    }
 
     // bit[1] analog in
     TP2825_Set_Pclk((pclk_phase[source] >> 1) & 1);
