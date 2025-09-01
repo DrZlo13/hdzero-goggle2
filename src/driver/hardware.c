@@ -475,7 +475,12 @@ void vclk_phase_set(video_source_t source, uint8_t reg_8d_sel) {
     else
         I2C_Write(ADDR_FPGA, 0x8d, (vclk_phase[source] >> 24) & 0xff);
 
-    I2C_Write(ADDR_FPGA, 0x8e, 0x01);
+    if (source == VIDEO_SOURCE_HDZERO_IN_720P60_50 || source == VIDEO_SOURCE_HDZERO_IN_720P90) {
+        I2C_Write(ADDR_FPGA, 0x8e, 0x01);
+    } else {
+        I2C_Write(ADDR_FPGA, 0x8e, (vclk_phase[source] >> 16) & 0xff);
+    }
+
     I2C_Write(ADDR_AL, 0x14, (vclk_phase[source] >> 8) & 0xff);
 
     IT66121_set_phase(vclk_phase[source] & 3, 0);
