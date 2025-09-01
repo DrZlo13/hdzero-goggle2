@@ -314,7 +314,7 @@ void osd_analog_rssi_show(bool bShow) {
     if (g_setting.analog_rssi.calib_min == g_setting.analog_rssi.calib_max)
         rssi_volt_mv = 0;
     else {
-        rssi_volt_mv = RTC6715_GetRssi();
+        rssi_volt_mv = rtc6715_rssi;
         if (rssi_volt_mv <= g_setting.analog_rssi.calib_min)
             rssi_volt_mv = 0;
         else if (rssi_volt_mv >= g_setting.analog_rssi.calib_max)
@@ -626,9 +626,6 @@ void osd_elements_set_dummy_sources() {
 #define FC_OSD_CHECK_PERIOD 200 // 25ms
 void osd_hdzero_update(void) {
     char buf[128], i;
-
-    if (GOGGLE_VER_2)
-        RTC6715_GetRssi();
 
     if (g_osd_update_cnt < FC_OSD_CHECK_PERIOD)
         g_osd_update_cnt++;

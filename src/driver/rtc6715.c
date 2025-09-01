@@ -13,6 +13,12 @@
 #include "gpadc.h"
 #include "i2c.h"
 
+#include "../core/settings.h"
+#include "app_state.h"
+#include "ui/page_common.h"
+
+int rtc6715_rssi = 0;
+
 static uint8_t RTC6715_rssi;
 
 void MM_Write(uint8_t addr, uint32_t dat) {
@@ -79,4 +85,16 @@ int RTC6715_GetRssi() {
     rssi_adc = 3300 * value / 4096;
     // LOGI("rssi voltage: %02f", (float)rssi_adc / 1000);
     return rssi_adc;
+}
+
+extern int GOGGLE_VER_2;
+void *thread_rtc6715_rssi(void *ptr) {
+    for (;;) {
+        if (GOGGLE_VER_2) {
+            if (g_app_state == APP_STATE_VIDEO && g_source_info.source == SOURCE_ANALOG && g_setting.source.analog_module == SETTING_SOURCES_ANALOG_MODULE_INTERNAL) {
+                rtc6715_rssi = RTC6715_GetRssi();
+            }
+        }
+        usleep(100 * 1000);
+    }
 }
