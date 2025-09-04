@@ -19,8 +19,6 @@
 
 int rtc6715_rssi = 0;
 
-static uint8_t RTC6715_rssi;
-
 void MM_Write(uint8_t addr, uint32_t dat) {
     uint8_t val;
 
