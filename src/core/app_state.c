@@ -211,17 +211,21 @@ void app_switch_to_hdzero(bool is_default) {
         Display_1080P30(CAM_MODE);
         break;
 
+    case VR_1080P24:
+        Display_1080P24(CAM_MODE);
+        break;
+
     default:
         perror("switch_to_video CaM_MODE error");
     }
 
     channel_osd_mode = CHANNEL_SHOWTIME;
 
-    if (CAM_MODE == VR_1080P30)
+    if (CAM_MODE == VR_1080P30 || CAM_MODE == VR_1080P24)
         lvgl_switch_to_1080p();
     else
         lvgl_switch_to_720p();
-    osd_fhd(CAM_MODE == VR_1080P30);
+    osd_fhd(CAM_MODE == VR_1080P30 || CAM_MODE == VR_1080P24);
     osd_clear();
     osd_show(true);
     lv_timer_handler();
