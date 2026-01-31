@@ -51,7 +51,7 @@ static void nop() {}
 static void rollerNop(uint8_t key) { (void)key; }
 
 static const action_t btnActions[] = {
-    {.id = 11, .name = "None", .functionPtr = &nop},
+    {.id = 10, .name = "None", .functionPtr = &nop},
     {.id = 0, .name = "Toggle OSD", .functionPtr = &osd_toggle},
     {.id = 1, .name = "Main menu", .functionPtr = &app_switch_to_menu},
     {.id = 2, .name = "Toggle DVR", .functionPtr = &dvr_toggle},
@@ -62,7 +62,7 @@ static const action_t btnActions[] = {
     {.id = 7, .name = "Star DVR", .functionPtr = &dvr_star},
     {.id = 8, .name = "Toggle source", .functionPtr = &source_toggle},
     {.id = 9, .name = "Cycle source", .functionPtr = &source_cycle},
-    {.id = 10, .name = "Toggle cam", .functionPtr = &source_toggle_cam},
+    {.id = 11, .name = "Toggle cam", .functionPtr = &source_toggle_cam},
 };
 
 static const action_t rollerActions[] = {
